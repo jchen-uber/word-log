@@ -2,6 +2,9 @@ import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { Box, Button, Card, CardContent, Container, Divider, Fab, Grid, Paper, Typography } from '@mui/material'
+import AddIcon from '@mui/icons-material/Add'
+import RemoveIcon from '@mui/icons-material/Remove'
+import BadWordsCard from '@/components/BadWordsCard'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -24,28 +27,10 @@ export default function Home() {
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={6}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h4" gutterBottom>
-                    Peter
-                  </Typography>
-                  <Fab variant="extended">23 bad words</Fab>
-                  <Divider sx={{ mt: 2, mb: 2 }}></Divider>
-                  <Button variant="outlined">Bad Word Said</Button>
-                </CardContent>
-              </Card>
+             <BadWordsCard person="Peter" />
             </Grid>
             <Grid item xs={6}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h4" gutterBottom>
-                    Mommy
-                  </Typography>
-                  <Fab variant="extended">35 bad words</Fab>
-                  <Divider sx={{ mt: 2, mb: 2 }}></Divider>
-                  <Button variant="outlined">Bad Word Said</Button>
-                </CardContent>
-              </Card>
+              <BadWordsCard person="Mommy" />
             </Grid>
           </Grid>
         </Box>
