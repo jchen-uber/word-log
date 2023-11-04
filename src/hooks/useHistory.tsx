@@ -1,7 +1,14 @@
 import useSWR, { Fetcher } from "swr"
 
 //const fetcher = (...args) => fetch(...args).then(res => res.json())
-const fetcher: Fetcher<History, string> = (person) => 
+
+interface WordHistory {
+  number: {
+    type: string
+  }
+}
+
+const fetcher: Fetcher<WordHistory, string> = (person) => 
   fetch(`https://bad-words-site-default-rtdb.firebaseio.com/${person}.json?limitToLast=10&orderBy="$key"`)
     .then(res => res.json())
 
