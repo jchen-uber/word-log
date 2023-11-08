@@ -1,12 +1,15 @@
-import { Card, CardContent, Typography, Fab, Divider, List, Collapse, ListItem, IconButton } from "@mui/material";
+import { Card, CardContent, Typography, Fab, Divider, List, Collapse, ListItem, IconButton, ListItemText } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
-import VoiceChatIcon from '@mui/icons-material/VoiceChat';
-import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
+//import SayIcon from '@mui/icons-material/VoiceChat';
+//import VideoIcon from '@mui/icons-material/OndemandVideo';
 import { useEffect } from "react";
 import useHistory from "@/hooks/useHistory";
 import dayjs from "dayjs";
 import useCounts from "@/hooks/useCounts";
+import { TransitionGroup } from 'react-transition-group';
+import SayIcon from '@mui/icons-material/RecordVoiceOver';
+import VideoIcon from '@mui/icons-material/LiveTv';
 
 interface BadWordsCardProps {
   person: "Mommy" | "Peter"
@@ -20,6 +23,31 @@ export async function getStaticPaths() {
     fallback: true
   }
 }
+
+interface RenderItemOptions {
+  key: string;
+  value: any;
+  handleRemoveItem: (item: string) => void;
+}
+
+function renderItem({ key, value, handleRemoveItem }: RenderItemOptions) {
+  return (
+    <ListItem>
+      <IconButton>
+        {value["type"] == "say" && <SayIcon />}
+        {value["type"] == "video" && <VideoIcon />}
+      </IconButton>
+      {dayjs(parseInt(key)).format("ddd, MMM D, YYYY h:mm A")}
+      <IconButton
+        aria-label="delete"
+        onClick={() => handleRemoveItem(key)}
+      >
+        <DeleteIcon />
+      </IconButton>
+    </ListItem>
+  );
+}
+
 
 function BadWordsCard(props: BadWordsCardProps) {
   const { history, mutate, isLoading } = useHistory(props.person)
@@ -111,35 +139,26 @@ function BadWordsCard(props: BadWordsCardProps) {
         </Fab>
         <Fab aria-label="add" onClick={() => handleClickAdd("say")}>
           {" "}
-          <VoiceChatIcon />
+          <SayIcon />
         </Fab>
         <Fab aria-label="add" onClick={() => handleClickAdd("video")}>
           {" "}
-          <OndemandVideoIcon />
+          <VideoIcon />
         </Fab>
         <Divider sx={{ mt: 2, mb: 2 }}></Divider>
         <Typography variant="h5" gutterBottom>
           History
         </Typography>
         <List sx={{ mt: 1 }}>
+          <TransitionGroup>
           {history &&
             Object.entries(history)
               .reverse()
               .map(([key, value]) => (
-                <ListItem key={key}>
-                  <IconButton>
-                    {value["type"] == "say" && <VoiceChatIcon />}
-                    {value["type"] == "video" && <OndemandVideoIcon />}
-                  </IconButton>
-                  {dayjs(parseInt(key)).format("ddd, MMM D, YYYY h:mm A")}
-                  <IconButton
-                    aria-label="delete"
-                    onClick={() => handleDelete(key)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </ListItem>
+                <Collapse key={key}>{renderItem({ key, value, handleRemoveItem: handleDelete })}</Collapse>
+
               ))}
+          </TransitionGroup>
         </List>
       </CardContent>
     </Card>
